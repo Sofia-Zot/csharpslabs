@@ -1,10 +1,21 @@
-using System.Collections.Generic;
 using SkipMaster.Domain;
 
 namespace SkipMaster.Simulation;
 
-// прогон до конца семестра или до вылета
+// прогон семестра по шагам - по одному дню за вызов
 public interface ISemesterRunner
 {
-    SemesterResult Run(IReadOnlyList<Teacher> teachers, ISkipStrategy strategy, IStudentHistory history);
+    // следующий учебный день
+    // если семестр кончился или студент вылетел - ничего не происходит
+    DayOutcome? MakeStep();
+
+    int CurrentDay { get; }
+
+    int TotalPleasure { get; }
+
+    double AveragePerDay { get; }
+
+    bool Exploded { get; }
+
+    bool SemesterFinished { get; }
 }
