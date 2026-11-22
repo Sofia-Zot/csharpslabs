@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
@@ -7,7 +8,7 @@ using SkipMaster.Simulation;
 
 namespace SkipMaster.Host;
 
-// фоновый цикл: день -> лог -> пауза; стоп по сtrl+с или при вылете
+// фоновый цикл: день -> лог -> пауза; стоп по Ctrl+C или при вылете
 public sealed class SemesterHostedService : BackgroundService
 {
     private readonly ISemesterRunner _semesterRunner;
@@ -25,28 +26,24 @@ public sealed class SemesterHostedService : BackgroundService
         _lifetime = lifetime;
         _dayDelayMilliseconds = options.Value.DayDelayMilliseconds;
         _logger = logger;
+
+        if (_dayDelayMilliseconds < 0)
+        {
+            throw new ArgumentException("Задержка дня (DayDelayMilliseconds) не может быть отрицательной");
+        }
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        while (!stoppingToken.IsCancellationRequested
-               && !_semesterRunner.Exploded
-               && !_semesterRunner.SemesterFinished)
+        while (!stoppingToken.IsCancellationRequested && !_semesterRunner.Exploded)
         {
             int day = _semesterRunner.CurrentDay;
             _semesterRunner.MakeStep();
 
             if (_semesterRunner.Exploded)
             {
-                _logger.LogWarning("Студент вылетел на дне {Day}, удовольствие обнулено", day);
-                _lifetime.StopApplication();
-                break;
-            }
-
-            if (_semesterRunner.SemesterFinished)
-            {
-                _logger.LogInformation(
-                    "Семестр завершен: {Days} дней, общее удовольствие {Total}, среднее {Average:F2}",
+                _logger.LogWarning(
+                    "Студент вылетел на дне {Day}, удовольствие обнулено: общее {Total}, среднее {Average:F2}",
                     day,
                     _semesterRunner.TotalPleasure,
                     _semesterRunner.AveragePerDay);

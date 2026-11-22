@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using SkipMaster.Domain;
 
@@ -20,6 +21,12 @@ public sealed class DayGenerator : IDayGenerator
         YesterdayInfo yesterday)
     {
         bool[] attendancePlan = strategy.DecideDay(day, history);
+
+        if (attendancePlan.Length != teachers.Count)
+        {
+            throw new ArgumentException(
+                $"Стратегия вернула план на {attendancePlan.Length} пар, а преподавателей {teachers.Count}");
+        }
 
         var outcomes = new SubjectOutcome[attendancePlan.Length];
         int pleasure = 0;

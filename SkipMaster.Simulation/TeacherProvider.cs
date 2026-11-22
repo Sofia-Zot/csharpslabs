@@ -11,7 +11,7 @@ public sealed class TeacherProvider
     public TeacherProvider(IAskRuleGenerator ruleGenerator)
     {
         Teachers = Enum.GetValues<Subject>()
-            .Select(subject => new Teacher(subject, ruleGenerator.Generate(subject)))
+            .Select(subject => new Teacher(subject, ruleGenerator.Generate()))
             .ToArray();
     }
 

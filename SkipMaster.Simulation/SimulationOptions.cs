@@ -4,6 +4,4 @@ namespace SkipMaster.Simulation;
 public sealed class SimulationOptions
 {
     public int DayDelayMilliseconds { get; set; } = 5000;
-
-    public int SemesterDays { get; set; } = 100;
 }

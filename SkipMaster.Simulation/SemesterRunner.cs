@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Microsoft.Extensions.Options;
 using SkipMaster.Domain;
 
 namespace SkipMaster.Simulation;
@@ -10,7 +9,6 @@ public sealed class SemesterRunner : ISemesterRunner
     private readonly IReadOnlyList<Teacher> _teachers;
     private readonly ISkipStrategy _strategy;
     private readonly IStudentHistory _history;
-    private readonly int _semesterDays;
     private YesterdayInfo _yesterday;
     private int _daysCompleted;
 
@@ -18,14 +16,12 @@ public sealed class SemesterRunner : ISemesterRunner
         IDayGenerator dayGenerator,
         TeacherProvider teacherProvider,
         ISkipStrategy strategy,
-        IStudentHistory history,
-        IOptions<SimulationOptions> options)
+        IStudentHistory history)
     {
         _dayGenerator = dayGenerator;
         _teachers = teacherProvider.Teachers;
         _strategy = strategy;
         _history = history;
-        _semesterDays = options.Value.SemesterDays;
 
         // день 1 -> вчера никого не спрашивали
         _yesterday = YesterdayInfo.AllNotAsked();
@@ -38,13 +34,11 @@ public sealed class SemesterRunner : ISemesterRunner
 
     public bool Exploded { get; private set; }
 
-    public bool SemesterFinished { get; private set; }
-
     public double AveragePerDay => _daysCompleted == 0 ? 0 : TotalPleasure / (double)_daysCompleted;
 
     public DayOutcome? MakeStep()
     {
-        if (SemesterFinished || Exploded)
+        if (Exploded)
         {
             return null;
         }
@@ -66,8 +60,6 @@ public sealed class SemesterRunner : ISemesterRunner
         }
 
         CurrentDay++;
-        SemesterFinished = CurrentDay > _semesterDays;
-
         return outcome;
     }
 }
