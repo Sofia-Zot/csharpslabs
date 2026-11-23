@@ -6,32 +6,60 @@ namespace SkipMaster.Simulation;
 public sealed class SemesterRunner : ISemesterRunner
 {
     private readonly IDayGenerator _dayGenerator;
+    private readonly IReadOnlyList<Teacher> _teachers;
+    private readonly ISkipStrategy _strategy;
+    private readonly IStudentHistory _history;
+    private YesterdayInfo _yesterday;
+    private int _daysCompleted;
 
-    public SemesterRunner(IDayGenerator dayGenerator)
+    public SemesterRunner(
+        IDayGenerator dayGenerator,
+        TeacherProvider teacherProvider,
+        ISkipStrategy strategy,
+        IStudentHistory history)
     {
         _dayGenerator = dayGenerator;
-    }
-
-    public SemesterResult Run(IReadOnlyList<Teacher> teachers, ISkipStrategy strategy, IStudentHistory history)
-    {
-        int totalPleasure = 0;
+        _teachers = teacherProvider.Teachers;
+        _strategy = strategy;
+        _history = history;
 
         // день 1 -> вчера никого не спрашивали
-        var yesterday = YesterdayInfo.AllNotAsked();
+        _yesterday = YesterdayInfo.AllNotAsked();
+        CurrentDay = 1;
+    }
 
-        for (int day = 1; day <= SimulationDefaults.SemesterDays; day++)
+    public int CurrentDay { get; private set; }
+
+    public int TotalPleasure { get; private set; }
+
+    public bool Exploded { get; private set; }
+
+    public double AveragePerDay => _daysCompleted == 0 ? 0 : TotalPleasure / (double)_daysCompleted;
+
+    public DayOutcome? MakeStep()
+    {
+        if (Exploded)
         {
-            (DayOutcome outcome, yesterday) = _dayGenerator.RunDay(day, teachers, strategy, history, yesterday);
-
-            if (outcome.Exploded)
-            {
-                // вылет -> обнуляем накопленное и останавливаемся
-                return new SemesterResult(0, day, exploded: true);
-            }
-
-            totalPleasure += outcome.Pleasure;
+            return null;
         }
 
-        return new SemesterResult(totalPleasure, SimulationDefaults.SemesterDays, exploded: false);
+        (DayOutcome outcome, _yesterday) = _dayGenerator.RunDay(
+            CurrentDay, _teachers, _strategy, _history, _yesterday);
+
+        _daysCompleted++;
+
+        if (outcome.Exploded)
+        {
+            // вылет -> обнуляем накопленное и останавливаемся
+            TotalPleasure = 0;
+            Exploded = true;
+        }
+        else
+        {
+            TotalPleasure += outcome.Pleasure;
+        }
+
+        CurrentDay++;
+        return outcome;
     }
 }

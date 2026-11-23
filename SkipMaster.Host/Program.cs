@@ -1,29 +1,29 @@
 using System;
-using System.Linq;
 using System.Text;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using SkipMaster.Domain;
+using SkipMaster.Host;
 using SkipMaster.Simulation;
 using SkipMaster.Strategies;
 
-// пока руками, di будет в лабе 2
-
 Console.OutputEncoding = Encoding.UTF8;
 
-IRandomSource random = new DefaultRandomSource();
-var ruleGenerator = new RuleGenerator(random);
+var builder = Host.CreateDefaultBuilder(args);
 
-// каждому преподу на семестр - случайное правило
-Teacher[] teachers = Enum.GetValues<Subject>()
-    .Select(subject => new Teacher(subject, ruleGenerator.Generate(subject)))
-    .ToArray();
+builder.ConfigureServices((context, services) =>
+{
+    services.Configure<SimulationOptions>(context.Configuration.GetSection("SimulationOptions"));
 
-var history = new InMemoryStudentHistory();
-ISkipStrategy strategy = new AlwaysAttendStrategy();
-var dayGenerator = new DayGenerator(random);
-var semesterRunner = new SemesterRunner(dayGenerator);
+    services.AddSingleton<IRandomSource, DefaultRandomSource>();
+    services.AddSingleton<IAskRuleGenerator, RuleGenerator>();
+    services.AddSingleton<TeacherProvider>();
+    services.AddSingleton<IStudentHistory, InMemoryStudentHistory>();
+    services.AddSingleton<ISkipStrategy, AlwaysAttendStrategy>();
+    services.AddSingleton<IDayGenerator, DayGenerator>();
+    services.AddSingleton<ISemesterRunner, SemesterRunner>();
 
-SemesterResult result = semesterRunner.Run(teachers, strategy, history);
+    services.AddHostedService<SemesterHostedService>();
+});
 
-Console.WriteLine(result.Exploded ? $"Студент вылетел на дне {result.DaysCompleted}" : "Семестр завершен");
-Console.WriteLine($"Общее удовольствие: {result.TotalPleasure}");
-Console.WriteLine($"Среднее удовольствие в день: {result.AveragePerDay}");
+builder.Build().Run();

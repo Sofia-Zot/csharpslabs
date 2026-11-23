@@ -14,7 +14,7 @@ public sealed class RuleGenerator : IAskRuleGenerator
         _random = random;
     }
 
-    public IAskRule Generate(Subject ownSubject)
+    public IAskRule Generate()
     {
         // 0, 1 или 2 -> какое правило досталось преподу
         int ruleType = _random.Next(RuleTypeCount);
