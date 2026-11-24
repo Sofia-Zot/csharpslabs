@@ -19,7 +19,7 @@ builder.ConfigureServices((context, services) =>
     services.AddSingleton<IAskRuleGenerator, RuleGenerator>();
     services.AddSingleton<TeacherProvider>();
     services.AddSingleton<IStudentHistory, InMemoryStudentHistory>();
-    services.AddSingleton<ISkipStrategy, AlwaysAttendStrategy>();
+    services.AddSingleton<ISkipStrategy, LastOutcomeStrategy>();
     services.AddSingleton<IDayGenerator, DayGenerator>();
     services.AddSingleton<ISemesterRunner, SemesterRunner>();
 
