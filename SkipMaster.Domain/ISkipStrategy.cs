@@ -1,6 +1,8 @@
 namespace SkipMaster.Domain;
 
-// стратегии (потом)
+/// <summary>
+/// Стратегия прогулов студента.
+/// </summary>
 public interface ISkipStrategy
 {
     string Name { get; }

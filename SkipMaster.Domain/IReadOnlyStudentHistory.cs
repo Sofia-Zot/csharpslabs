@@ -1,6 +1,8 @@
 namespace SkipMaster.Domain;
 
-// что студент успел увидеть - только чтение
+/// <summary>
+/// Что студент успел увидеть - только чтение.
+/// </summary>
 public interface IReadOnlyStudentHistory
 {
     bool Attended(int day, Subject subject);

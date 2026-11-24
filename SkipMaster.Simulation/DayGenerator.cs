@@ -4,15 +4,8 @@ using SkipMaster.Domain;
 
 namespace SkipMaster.Simulation;
 
-public sealed class DayGenerator : IDayGenerator
+public sealed class DayGenerator(IRandomSource random) : IDayGenerator
 {
-    private readonly IRandomSource _random;
-
-    public DayGenerator(IRandomSource random)
-    {
-        _random = random;
-    }
-
     public (DayOutcome Outcome, YesterdayInfo NextYesterday) RunDay(
         int day,
         IReadOnlyList<Teacher> teachers,
@@ -39,7 +32,7 @@ public sealed class DayGenerator : IDayGenerator
             bool attended = attendancePlan[i];
 
             // спрашиваем в любом случае, иначе прогул и спросили не случится никогда
-            bool asked = teacher.Ask(yesterday, _random);
+            bool asked = teacher.Ask(yesterday, random);
 
             if (!attended)
             {
@@ -60,13 +53,7 @@ public sealed class DayGenerator : IDayGenerator
         pleasure += SimulationDefaults.PleasurePerPie;
 
         // сегодняшние опросы -> завтрашнее вчера
-        var nextYesterday = new YesterdayInfo(
-            outcomes[0].Asked,
-            outcomes[1].Asked,
-            outcomes[2].Asked,
-            outcomes[3].Asked,
-            outcomes[4].Asked,
-            outcomes[5].Asked);
+        var nextYesterday = new YesterdayInfo(outcomes);
 
         return (new DayOutcome(outcomes, exploded, pleasure), nextYesterday);
     }

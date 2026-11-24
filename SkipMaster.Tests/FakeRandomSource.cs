@@ -4,7 +4,9 @@ using SkipMaster.Domain;
 
 namespace SkipMaster.Tests;
 
-// заранее заданные значения -> прогон детерминирован, лишний запрос к рандому сразу виден
+/// <summary>
+/// Заданные заранее значения -> прогон детерминирован, лишний запрос к рандому сразу виден.
+/// </summary>
 public sealed class FakeRandomSource : IRandomSource
 {
     private readonly Queue<double> _doubles;

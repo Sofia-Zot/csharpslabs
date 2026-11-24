@@ -78,9 +78,9 @@ public class DayGeneratorTests
             history,
             YesterdayInfo.AllNotAsked());
 
-        Assert.True(nextYesterday.AskedCalculus);
-        Assert.False(nextYesterday.AskedLinearAlgebra);
-        Assert.False(nextYesterday.AskedEnglish);
+        Assert.True(nextYesterday.WasAsked(Subject.Calculus));
+        Assert.False(nextYesterday.WasAsked(Subject.LinearAlgebra));
+        Assert.False(nextYesterday.WasAsked(Subject.English));
     }
 
     [Fact]

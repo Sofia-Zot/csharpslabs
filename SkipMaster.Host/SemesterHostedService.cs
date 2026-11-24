@@ -8,7 +8,9 @@ using SkipMaster.Simulation;
 
 namespace SkipMaster.Host;
 
-// фоновый цикл: день -> лог -> пауза; стоп по Ctrl+C или при вылете
+/// <summary>
+/// Фоновый цикл: день -> лог -> пауза; стоп по Ctrl+C или при вылете.
+/// </summary>
 public sealed class SemesterHostedService : BackgroundService
 {
     private readonly ISemesterRunner _semesterRunner;

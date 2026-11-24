@@ -3,7 +3,9 @@ using SkipMaster.Domain;
 
 namespace SkipMaster.Simulation;
 
-// пока в памяти (в лабе 4 переедет в базу)
+/// <summary>
+/// Пока в памяти (в лабе 4 переедет в базу).
+/// </summary>
 public sealed class InMemoryStudentHistory : IStudentHistory
 {
     private readonly Dictionary<(int Day, Subject Subject), DayRecord> _records = new();

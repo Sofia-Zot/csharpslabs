@@ -1,20 +1,14 @@
 namespace SkipMaster.Domain;
 
-// правило внутри, снаружи видно только Ask
-public sealed class Teacher
+/// <summary>
+/// Правило внутри, снаружи видно только Ask.
+/// </summary>
+public sealed class Teacher(Subject subject, IAskRule rule)
 {
-    private readonly IAskRule _rule;
-
-    public Subject Subject { get; }
-
-    public Teacher(Subject subject, IAskRule rule)
-    {
-        Subject = subject;
-        _rule = rule;
-    }
+    public Subject Subject { get; } = subject;
 
     public bool Ask(YesterdayInfo yesterday, IRandomSource random)
     {
-        return _rule.ShouldAsk(yesterday, random);
+        return rule.ShouldAsk(yesterday, random);
     }
 }
