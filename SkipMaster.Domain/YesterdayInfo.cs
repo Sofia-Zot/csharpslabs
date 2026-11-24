@@ -12,11 +12,11 @@ public readonly struct YesterdayInfo
 
     public YesterdayInfo(IReadOnlyList<SubjectOutcome> outcomes)
     {
-        _asked = new bool[outcomes.Count];
+        _asked = new bool[Enum.GetValues<Subject>().Length];
 
-        for (int i = 0; i < outcomes.Count; i++)
+        foreach (SubjectOutcome outcome in outcomes)
         {
-            _asked[i] = outcomes[i].Asked;
+            _asked[(int)outcome.Subject] = outcome.Asked;
         }
     }
 

@@ -8,6 +8,7 @@ public class RandomAskRuleTests
 {
     [Theory]
     [InlineData(0.4, true)]
+    [InlineData(0.5, false)]
     [InlineData(0.6, false)]
     public void ShouldAsk_SubstitutedDraw_ReturnsExpected(double draw, bool expected)
     {
