@@ -1,6 +1,8 @@
 namespace SkipMaster.Domain;
 
-// весь рандом приложения - только через это (тестировать будет проще)
+/// <summary>
+/// Весь рандом приложения - только через это (тестировать будет проще).
+/// </summary>
 public interface IRandomSource
 {
     double NextDouble();

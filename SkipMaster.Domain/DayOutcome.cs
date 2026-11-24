@@ -4,19 +4,14 @@ namespace SkipMaster.Domain;
 
 public readonly record struct SubjectOutcome(Subject Subject, bool Attended, bool Asked);
 
-// итог дня по всем предметам
-public sealed class DayOutcome
+/// <summary>
+/// Итог дня по всем предметам.
+/// </summary>
+public sealed class DayOutcome(IReadOnlyList<SubjectOutcome> subjects, bool exploded, int pleasure)
 {
-    public DayOutcome(IReadOnlyList<SubjectOutcome> subjects, bool exploded, int pleasure)
-    {
-        Subjects = subjects;
-        Exploded = exploded;
-        Pleasure = pleasure;
-    }
+    public IReadOnlyList<SubjectOutcome> Subjects => subjects;
 
-    public IReadOnlyList<SubjectOutcome> Subjects { get; }
+    public bool Exploded => exploded;
 
-    public bool Exploded { get; }
-
-    public int Pleasure { get; }
+    public int Pleasure => pleasure;
 }

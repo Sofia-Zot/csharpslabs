@@ -1,6 +1,8 @@
 namespace SkipMaster.Domain;
 
-// на старте семестра каждый препод получает свое правило
+/// <summary>
+/// На старте семестра каждый препод получает свое правило.
+/// </summary>
 public interface IAskRuleGenerator
 {
     IAskRule Generate();

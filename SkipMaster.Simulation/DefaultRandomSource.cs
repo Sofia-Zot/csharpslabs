@@ -3,7 +3,9 @@ using SkipMaster.Domain;
 
 namespace SkipMaster.Simulation;
 
-// обертка над обычным random
+/// <summary>
+/// Обертка над обычным random.
+/// </summary>
 public sealed class DefaultRandomSource : IRandomSource
 {
     private readonly Random _random = new();

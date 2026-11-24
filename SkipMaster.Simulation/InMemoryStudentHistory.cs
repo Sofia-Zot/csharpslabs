@@ -3,7 +3,9 @@ using SkipMaster.Domain;
 
 namespace SkipMaster.Simulation;
 
-// пока в памяти (в лабе 4 переедет в базу)
+/// <summary>
+/// Пока в памяти (в лабе 4 переедет в базу).
+/// </summary>
 public sealed class InMemoryStudentHistory : IStudentHistory
 {
     private readonly Dictionary<(int Day, Subject Subject), DayRecord> _records = new();
@@ -15,7 +17,8 @@ public sealed class InMemoryStudentHistory : IStudentHistory
 
     public bool? WasAsked(int day, Subject subject)
     {
-        if (_records.TryGetValue((day, subject), out DayRecord entry))
+        // исход опроса виден только на посещённых парах
+        if (_records.TryGetValue((day, subject), out DayRecord entry) && entry.Attended)
         {
             return entry.Asked;
         }

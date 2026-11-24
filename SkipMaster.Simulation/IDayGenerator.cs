@@ -3,7 +3,9 @@ using SkipMaster.Domain;
 
 namespace SkipMaster.Simulation;
 
-// один учебный день целиком
+/// <summary>
+/// Один учебный день целиком.
+/// </summary>
 public interface IDayGenerator
 {
     (DayOutcome Outcome, YesterdayInfo NextYesterday) RunDay(
