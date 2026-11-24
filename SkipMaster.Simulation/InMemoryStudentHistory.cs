@@ -17,7 +17,8 @@ public sealed class InMemoryStudentHistory : IStudentHistory
 
     public bool? WasAsked(int day, Subject subject)
     {
-        if (_records.TryGetValue((day, subject), out DayRecord entry))
+        // исход опроса виден только на посещённых парах
+        if (_records.TryGetValue((day, subject), out DayRecord entry) && entry.Attended)
         {
             return entry.Asked;
         }

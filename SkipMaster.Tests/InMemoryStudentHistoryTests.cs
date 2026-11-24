@@ -39,10 +39,10 @@ public class InMemoryStudentHistoryTests
         var history = new InMemoryStudentHistory();
 
         history.Record(3, Subject.Programming, attended: true, asked: true);
-        history.Record(3, Subject.Programming, attended: false, asked: false);
+        history.Record(3, Subject.Programming, attended: false, asked: true);
 
         Assert.False(history.Attended(3, Subject.Programming));
-        Assert.False(history.WasAsked(3, Subject.Programming));
+        Assert.Null(history.WasAsked(3, Subject.Programming)); // исход прогуленной пары не виден
     }
 
     [Fact]
@@ -50,12 +50,23 @@ public class InMemoryStudentHistoryTests
     {
         var history = new InMemoryStudentHistory();
 
-        history.Record(2, Subject.Physics, attended: false, asked: true);
+        history.Record(2, Subject.Physics, attended: true, asked: true);
         history.Record(3, Subject.Physics, attended: true, asked: false);
 
         Assert.True(history.WasAsked(2, Subject.Physics));
         Assert.False(history.WasAsked(3, Subject.Physics));
-        Assert.False(history.Attended(2, Subject.Physics));
+        Assert.True(history.Attended(2, Subject.Physics));
         Assert.True(history.Attended(3, Subject.Physics));
+    }
+
+    [Fact]
+    public void WasAsked_SkippedPair_ReturnsNull()
+    {
+        var history = new InMemoryStudentHistory();
+
+        history.Record(3, Subject.Physics, attended: false, asked: true);
+
+        Assert.Null(history.WasAsked(3, Subject.Physics));
+        Assert.False(history.Attended(3, Subject.Physics));
     }
 }
